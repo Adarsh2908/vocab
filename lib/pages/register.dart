@@ -4,6 +4,7 @@ import 'login.dart';
 import 'colors.dart';
 import 'otp_verification.dart';
 import 'widgets.dart';
+import '../models/users.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -23,6 +24,7 @@ class _RegisterState extends State<Register> {
     final TextEditingController _registerDOB = TextEditingController();
     final TextEditingController _registerFirstname= TextEditingController();
     final TextEditingController _registerLastname = TextEditingController();
+    _registerDOB.text = DateTime.now() as String;
 
 
     final _formKey = GlobalKey<FormState>();
@@ -69,7 +71,7 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(color: mc.white),
                           keyboardType: TextInputType.emailAddress,
                           validator: (val) {
-                            if (val == null || val.length == 0) {
+                            if (val == null || val.isEmpty) {
                               return "Email is Required";
                             } else {
                               return null;
@@ -82,9 +84,10 @@ class _RegisterState extends State<Register> {
                           controller: _registerPassword,
                           decoration: wd.inputDecoration("PASSWORD",Icon(Icons.lock , color: mc.primaryBlue, size: 25.0)),
                           style: TextStyle(color: mc.white),
+                          obscureText: true,
                           keyboardType: TextInputType.visiblePassword,
                           validator: (val) {
-                            if (val == null || val.length == 0) {
+                            if (val == null || val.isEmpty) {
                               return "Please enter your Password.";
                             } else {
                               return null;
@@ -97,9 +100,10 @@ class _RegisterState extends State<Register> {
                           controller: _registerConfirmPassword,
                           decoration: wd.inputDecoration("CONFIRM PASSWORD",Icon(Icons.lock , color: mc.primaryBlue, size: 25.0)),
                           style: TextStyle(color: mc.white),
+                          obscureText: true,
                           keyboardType: TextInputType.visiblePassword,
                           validator: (val) {
-                            if (val == null || val.length == 0) {
+                            if (val == null || val.isEmpty) {
                               return "Please enter your Password.";
                             } else {
                               return null;
@@ -114,7 +118,7 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(color: mc.white),
                           keyboardType: TextInputType.visiblePassword,
                           validator: (val) {
-                            if (val == null || val.length == 0) {
+                            if (val == null || val.isEmpty) {
                               return "Please Enter your DOB";
                             } else {
                               return null;
@@ -129,7 +133,7 @@ class _RegisterState extends State<Register> {
                           style: TextStyle(color: mc.white),
                           keyboardType: TextInputType.visiblePassword,
                           validator: (val) {
-                            if (val == null || val.length == 0) {
+                            if (val == null || val.isEmpty) {
                               return "Enter First Name";
                             } else {
                               return null;
@@ -151,13 +155,15 @@ class _RegisterState extends State<Register> {
                 // Adding Register Button
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(10.0),
                         primary: mc.Green,
                         fixedSize: const Size(240,44)
                     ),
                     onPressed: () =>{
                       if (_formKey.currentState!.validate())
                         {
+                          // Call User Model
+                          Users(_registerEmail.text, _registerPassword.text, DateTime.now(), 0, 0, _registerFirstname.text, _registerLastname.text),
                           ScaffoldMessenger.of(context)
                               .showSnackBar(
                             const SnackBar(

@@ -1,15 +1,14 @@
+import 'package:Vocab/pages/login.dart';
 import 'package:Vocab/pages/saved_words.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'bug_report.dart';
 import 'widgets.dart';
 import 'colors.dart';
-import 'user_profile.dart';
-
-
+import 'package:shared_preferences/shared_preferences.dart';
+SharedPreferences prefs = SharedPreferences.getInstance() as SharedPreferences;
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     widgets wd = widgets();
@@ -61,15 +60,19 @@ class HomePage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Profile
+                    // Logout
                     ElevatedButton(
                       style: wd.elevatedButtonStyle(mc.primaryBlue, 100.0, 20.0),
-                      onPressed: () => {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=>  const UserProfile()),
+                      onPressed: () async =>  {
+                      prefs = await SharedPreferences.getInstance(),
+                        // Set logged to false in the Prefs
+                        prefs.setString('logged', "0"),
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Login())
                         )
                       },
-                      child:Text("PROFILE",
+                      child:Text("LOGOUT",
                           style: GoogleFonts.montserrat(
                               letterSpacing: 1.0,
                               fontSize: 10.0,

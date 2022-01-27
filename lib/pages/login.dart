@@ -5,6 +5,7 @@ import 'widgets.dart';
 import 'colors.dart';
 import 'register.dart';
 import 'homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -12,15 +13,15 @@ class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
+SharedPreferences prefs =  SharedPreferences.getInstance() as SharedPreferences;
 
 class _LoginState extends State<Login> {
-  bool stayLogin = false;
+  String stayLogin  = "0";
   final TextEditingController _loginPassword  = TextEditingController();
   final TextEditingController _loginEmail  = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final widgets wd = widgets();
   final myColors mc = myColors();
-
 
 
   @override
@@ -105,7 +106,7 @@ class _LoginState extends State<Login> {
                              child: CheckboxListTile(
                                activeColor: mc.Green,
                                  checkColor: mc.white,
-                                 value: stayLogin,
+                                 value: stayLogin == "1" ? true:false,
                                  title: Text("Remember me",style: GoogleFonts.montserrat(
                                    color: mc.white,
                                    fontSize: 15.0,
@@ -113,7 +114,13 @@ class _LoginState extends State<Login> {
                                  ),),
                                  onChanged: (bool? value){
                                    setState(() {
-                                     stayLogin = value!;
+                                     if(value == true)
+                                       {
+                                         stayLogin = "1";
+                                       }else
+                                         {
+                                           stayLogin = "0";
+                                         }
                                    });
                                  }
                              ),
@@ -133,10 +140,15 @@ class _LoginState extends State<Login> {
                                     padding: const EdgeInsets.all(10.0),
                                     primary: mc.primaryBlue,
                                     fixedSize: const Size(150, 50)),
-                                onPressed: () => {
+                                    onPressed: () async => {
+                                    prefs = await SharedPreferences.getInstance(),
                                       // Checking Form Validation
                                       if (_formKey.currentState!.validate())
                                         {
+                                          // Now after the Auth we need to store the status of user that he stays login or not
+                                          // Load Shared Pref here because we need to update the remember me in the storage
+                                         prefs.setString('logged', stayLogin),
+                                          prefs.setString('email', _loginEmail.text),
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(builder: (context)=> const HomePage()),

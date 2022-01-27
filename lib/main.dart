@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/welcome_screen.dart';
+import 'loggercheck.dart';
 void main() {
   runApp(VocabMaster());
 }
@@ -11,6 +11,6 @@ class VocabMaster extends StatelessWidget{
   Widget build(BuildContext context )  => const MaterialApp(
     debugShowCheckedModeBanner: false,
     title: title,
-    home: WelcomeScreen(),
+    home: LoggerCheck(),
   );
 }
