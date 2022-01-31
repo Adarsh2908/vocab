@@ -1,3 +1,4 @@
+import 'package:Vocab/services/userservice.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
@@ -8,12 +9,12 @@ import '../models/users.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
-
   @override
   _RegisterState createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
+
   @override
   Widget build(BuildContext context) {
 
@@ -24,14 +25,15 @@ class _RegisterState extends State<Register> {
     final TextEditingController _registerDOB = TextEditingController();
     final TextEditingController _registerFirstname= TextEditingController();
     final TextEditingController _registerLastname = TextEditingController();
-    _registerDOB.text = DateTime.now() as String;
 
 
     final _formKey = GlobalKey<FormState>();
+
     // Constructors
     widgets wd = widgets();
     myColors mc = myColors();
-
+    UserService us = UserService();
+    Users newUser;
     return Scaffold(
         backgroundColor: mc.Grey,
         appBar: AppBar(
@@ -58,7 +60,7 @@ class _RegisterState extends State<Register> {
                         fontWeight: FontWeight.w300),
                   ),
                 ),
-                  SizedBox(height:60.0),
+                  const SizedBox(height:60.0),
 
                 Form(
                     key: _formKey,
@@ -159,32 +161,69 @@ class _RegisterState extends State<Register> {
                         primary: mc.Green,
                         fixedSize: const Size(240,44)
                     ),
-                    onPressed: () =>{
+                    onPressed: ()  =>{
                       if (_formKey.currentState!.validate())
                         {
-                          // Call User Model
-                          Users(_registerEmail.text, _registerPassword.text, DateTime.now(), 0, 0, _registerFirstname.text, _registerLastname.text),
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(
+                            // We have to check if the Email is Valid or not
+                          if(!wd.validateEmail(_registerEmail.text))
+                            {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(
                             const SnackBar(
-                                content:
-                                Text('Please Verify your Email')
-                            ),
-                          ),
-                          // Go to OTP Page
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const OtpVerification()),
-                          )
-                        }
+                            content:
+                            Text('Invalid Email Address'),
+                            backgroundColor: Colors.red,
+                            ))
+                            },
+                          // Check if Password == confirm Password
+                          if(_registerPassword.text != _registerConfirmPassword.text)
+                            {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                    Text('Password Does not match'),
+                                    backgroundColor: Colors.red,
+                                  ))
+                            }
+                          else // When Everything is Fine
+                            {
+                              // Call User Model
+                              newUser = Users(
+                                  _registerEmail.text,
+                                  _registerPassword.text,
+                                  _registerDOB.text,
+                                  "0",
+                                  "0",
+                                  _registerFirstname.text,
+                                  _registerLastname.text),
+                              // Call User Save method
+                               us.createUser(newUser).then((val){
+                               print(val);
+                            }),
+                              // If user Exists
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                        Text('Please Verify your Email')
+                                    ),
+                                  ),
+                                  // Go to OTP Page
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (
+                                        context) => const OtpVerification()),
+                                  )
+                                }
+                            }
+
                     },
-                    child:  Container(
-                      child: Text("CREATE NEW ACCOUNT",
-                          style: GoogleFonts.montserrat(
-                              letterSpacing: 1.0,
-                              fontWeight: FontWeight.w500
-                          )),
-                    )
+                    child:  Text("CREATE NEW ACCOUNT",
+                        style: GoogleFonts.montserrat(
+                            letterSpacing: 1.0,
+                            fontWeight: FontWeight.w500
+                        ))
                 ),
                 const SizedBox(height:20.0),
                 InkWell(

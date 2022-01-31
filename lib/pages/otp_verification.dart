@@ -110,7 +110,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                             ),
                           ),
                           // Go to OTP Page
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => const HomePage()),
                           )
