@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 import 'widgets.dart';
 import '../services/getwords.dart';
@@ -65,7 +64,7 @@ class _SavedWordsState extends State<SavedWords> {
                         const SizedBox(
                           width: 10.0,
                         ),
-                        wd.putText("FAVORITES", 20.0, 3.0, mc.greyText),
+                        wd.putText("Today's Words", 20.0, 3.0, mc.greyText),
                       ],
                     ),
                     SizedBox(height: 30.0,),
@@ -81,7 +80,7 @@ class _SavedWordsState extends State<SavedWords> {
                               shrinkWrap: true,
                               itemCount:snapshot.data.length,
                               itemBuilder: (context,index){
-                                return  showWords(snapshot.data[index].word, index);
+                                return  showWords(snapshot.data[index].word,snapshot.data[index].definition, index,snapshot);
                               }),
                          const SizedBox(height: 20.0,)
                         ],
@@ -96,14 +95,16 @@ class _SavedWordsState extends State<SavedWords> {
       },
     );
   }
- showWords(String title, int index)
+ showWords(String title,String definition, int index,AsyncSnapshot snapshot)
   {
            return ( wd.wordCardSaved(
                 title,
                 "Hindi",
-                "This Means all of this is nice.",
+                definition,
                 index,
                 MediaQuery.of(context).size.width,
-               context));
+               context,
+                snapshot)
+           );
   }
 }

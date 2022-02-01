@@ -1,8 +1,8 @@
 class WordModel{
   // Fields that are needed in the words Details
-  final String word;
+  final dynamic word, origin , audiourl , definition, sentence;
+  final List synonym , antonym;
 
-  WordModel(this.word);
-
+  WordModel(this.word, this.origin, this.audiourl, this.definition, this.sentence, this.synonym, this.antonym);
 
 }

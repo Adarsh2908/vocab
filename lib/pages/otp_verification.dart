@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 import 'widgets.dart';
 import 'homepage.dart';
-
 class OtpVerification extends StatefulWidget {
-  const OtpVerification({Key? key}) : super(key: key);
+  final String email;
+  const OtpVerification({Key? key, required this.email}) : super(key: key);
 
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
@@ -18,6 +18,7 @@ class _OtpVerificationState extends State<OtpVerification> {
     myColors mc = myColors();
     widgets wd = widgets();
     // Values
+    bool isValid;
     final _formKey = GlobalKey<FormState>();
     final TextEditingController _otpValue = TextEditingController();
 
@@ -83,7 +84,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                       style: TextStyle(color: mc.white),
                       keyboardType: TextInputType.emailAddress,
                       validator: (val) {
-                        if (val == null || val.length == 0) {
+                        if (val == null || val.isEmpty) {
                           return "OTP is required";
                         } else {
                           return null;
@@ -95,25 +96,41 @@ class _OtpVerificationState extends State<OtpVerification> {
                 // Verify Button
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(10.0),
                         primary: mc.Green,
                         fixedSize: const Size(240,44)
                     ),
-                    onPressed: () =>{
+                    onPressed: () async =>{
                       if (_formKey.currentState!.validate())
                         {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(
-                            const SnackBar(
-                                content:
-                                Text("Verifying")
-                            ),
-                          ),
-                          // Go to OTP Page
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const HomePage()),
-                          )
+                          isValid = await wd.verifyOTP(widget.email, _otpValue.text) ,
+                          if(isValid)
+                            {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                const SnackBar(
+                                  content:
+                                  Text("Verified"),
+                                  backgroundColor: Colors.green,
+                                ),
+                              ),
+                              // Go to OTP Page
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const HomePage()),
+                              )
+                            }
+                          else
+                            {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                const SnackBar(
+                                  content:
+                                  Text("Invalid OTP"),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              ),
+                            }
                         }
                     },
                     child:  Container(

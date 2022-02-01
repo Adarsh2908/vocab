@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:Vocab/services/userservice.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,6 +35,9 @@ class _RegisterState extends State<Register> {
     myColors mc = myColors();
     UserService us = UserService();
     Users newUser;
+    Random random;
+    int otp;
+    String emailResponse;
     return Scaffold(
         backgroundColor: mc.Grey,
         appBar: AppBar(
@@ -161,7 +165,7 @@ class _RegisterState extends State<Register> {
                         primary: mc.Green,
                         fixedSize: const Size(240,44)
                     ),
-                    onPressed: ()  =>{
+                    onPressed: ()  async =>{
                       if (_formKey.currentState!.validate())
                         {
                             // We have to check if the Email is Valid or not
@@ -199,7 +203,7 @@ class _RegisterState extends State<Register> {
                                   _registerLastname.text),
                               // Call User Save method
                                us.createUser(newUser).then((val){
-                               print(val);
+                               // print(val);
                             }),
                               // If user Exists
                                   ScaffoldMessenger.of(context)
@@ -209,12 +213,13 @@ class _RegisterState extends State<Register> {
                                         Text('Please Verify your Email')
                                     ),
                                   ),
-                                  // Go to OTP Page
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (
-                                        context) => const OtpVerification()),
-                                  )
+                              // SEND Email now
+                              wd.sendOTP(_registerEmail.text),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (
+                                      context) =>  OtpVerification(email: _registerEmail.text)),
+                                ),
                                 }
                             }
 

@@ -8,6 +8,7 @@ import 'widgets.dart';
 import 'colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/getwords.dart';
+import '../services/getquote.dart';
 SharedPreferences prefs = SharedPreferences.getInstance() as SharedPreferences;
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -120,7 +121,7 @@ class HomePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      wd.homePageCard("STREAK", "KEEP GOING ", "50",mc.Blue,mc.primaryBlue),
+                      wd.homePageCard("WORDS", "KEEP GOING ", "50",mc.Blue,mc.primaryBlue),
                       wd.homePageCard("DAYS", "STAY CONSISTENT", "20",mc.TransRed,mc.Red),
                     ],
                   ),
@@ -149,21 +150,52 @@ class HomePage extends StatelessWidget {
                   ),
 
                   // Today's Quotes
-                  const SizedBox(height: 30.0,),
+                  const SizedBox(height: 20.0,),
 
                   // Today's Words
-                  wd.putText("TODAY'S QUOTE", 25.0, 2.0, mc.greyText),
+
                   const SizedBox(height: 15.0,),
                   Container(
-                    padding: EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
-                      color: mc.lightGrey.withOpacity(0.5),
+                      color: mc.primaryBlue.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(10.0)
                     ),
-                        child: wd.putQuote('“ '+"Forty is the old age of youth fifty the youth of old age. " + ' ”' + "\n-Adarsh", 22.0, 3.0, mc.primaryBlue.withOpacity(0.7)),
+                        child: FutureBuilder(
+                          future: GetQuote().getQuote(),
+                          builder: (BuildContext context , AsyncSnapshot snapshot)
+                          {
+                            if (snapshot.data == null) {
+                              return  Material(
+                                color: mc.background,
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:  [
+                                      const SizedBox(
+                                        child: CircularProgressIndicator(),
+                                        height: 50.0,
+                                        width: 50.0,
+                                      ),
+                                      const SizedBox(height: 40.0,),
+                                      wd.putText("Loading Quote ...", 10.0, 4.0, mc.white)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                            else {
+                              return (wd.putQuote('“ \n' +
+                                  snapshot.data[0] +
+                                  ' ”' + "\n \n - " + snapshot.data[1],
+                                  15.0, 2.0, mc.white));
+                            }
+                          },
+                        )
                       ),
                     // Footer
-                  const SizedBox(height: 25.0,),
+                  const SizedBox(height: 35.0,),
                   wd.footer(),
                 ],
               ),
@@ -173,5 +205,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-

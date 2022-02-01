@@ -3,14 +3,23 @@ import 'colors.dart';
 import 'widgets.dart';
 
 class WordDetails extends StatelessWidget {
-  final String word;
-  const WordDetails({Key? key, required this.word}) : super(key: key);
+  final AsyncSnapshot snapshot;
+  final index;
+  const WordDetails({Key? key, required this.snapshot, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Constructors
     final myColors mc = myColors();
     final widgets wd = widgets();
+    final dynamic word = snapshot.data[index].word;
+    final dynamic origin = snapshot.data[index].origin;
+    final dynamic definition = snapshot.data[index].definition;
+    final dynamic sentence = snapshot.data[index].sentence;
+    final List synonym = snapshot.data[index].synonym;
+    final List antonym = snapshot.data[index].antonym;
+    final String syno = synonym.join(" , ");
+    final String anto = antonym.join(" , ");
 
     // Vars
 
@@ -55,20 +64,19 @@ class WordDetails extends StatelessWidget {
               const SizedBox(height: 30.0,),
 
               Container(
-                height: 100.0,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: mc.Blue,
                   borderRadius: BorderRadius.circular(6.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(13.0,11.0,10.0,0.0),
+                  padding: const EdgeInsets.all(18.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       wd.putText("ORIGIN", 18.0, 2.0, mc.primaryBlue),
                       const SizedBox(height: 15.0,),
-                      wd.putText("DUMMY this was originated from all over the word.", 11.0, 2.0, mc.white)
+                      wd.putText(origin, 11.0, 2.0, mc.white)
                     ],
                   ),
                 ),
@@ -80,25 +88,24 @@ class WordDetails extends StatelessWidget {
               const SizedBox(height: 20.0,),
 
               Container(
-                height: 230.0,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: mc.TransRed,
                   borderRadius: BorderRadius.circular(6.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(13.0,11.0,10.0,0.0),
+                  padding: const EdgeInsets.all(18.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       wd.putText("DEFINITION", 18.0, 2.0, mc.Red),
                       const SizedBox(height: 15.0,),
-                      wd.putText("This was originated from all over the word for sake of this and that.", 11.0, 2.0, mc.white),
+                      wd.putText(definition, 11.0, 2.0, mc.white),
                       const SizedBox(height: 40.0,),
 
                       wd.putText("SENTENCE", 18.0, 2.0, mc.Red),
                       const SizedBox(height: 15.0,),
-                      wd.putText("This was originated from all over the word.", 11.0, 2.0, mc.white)
+                      wd.putText(sentence, 11.0, 2.0, mc.white)
                     ],
                   ),
                 ),
@@ -106,20 +113,19 @@ class WordDetails extends StatelessWidget {
               const SizedBox(height: 20.0,),
 
               Container(
-                height: 100.0,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: mc.lightOrange,
                   borderRadius: BorderRadius.circular(6.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(13.0,12.0,10.0,0.0),
+                  padding: const EdgeInsets.all(18.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                           wd.putText("SYNONYMS", 18.5, 2.0, Colors.deepPurpleAccent),
                       const SizedBox(height: 14.0,),
-                      wd.putText("This , That , Howdy, Catchy ", 12.0, 2.0, mc.white)
+                      wd.putText(syno, 12.0, 2.0, mc.white)
                     ],
                   ),
                 ),
@@ -127,20 +133,20 @@ class WordDetails extends StatelessWidget {
               const SizedBox(height: 20.0,),
 
               Container(
-                height: 100.0,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: mc.lightGreen,
                   borderRadius: BorderRadius.circular(6.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(13.0,12.0,10.0,0.0),
+                  padding: const EdgeInsets.all(18.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       wd.putText("ANTONYMS", 18.5, 2.0, Colors.green),
                       const SizedBox(height: 14.0,),
-                      wd.putText("This , That , Howdy, Catchy ", 12.0, 2.0, mc.white)
+
+                      wd.putText(anto, 12.0, 2.0, mc.white)
                     ],
                   ),
                 ),

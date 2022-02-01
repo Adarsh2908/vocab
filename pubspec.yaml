@@ -15,6 +15,7 @@ dependencies:
   email_validator: '^2.0.1'
   dio: ^4.0.4
   flutter_animated_splash: ^0.0.9
+  email_auth: ^1.0.0
 
 
 dev_dependencies:

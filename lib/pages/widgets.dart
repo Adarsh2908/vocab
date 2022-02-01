@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 import 'word_details.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:email_auth/email_auth.dart';
 
 class widgets  {
+  EmailAuth emailAuth = EmailAuth(sessionName: "V O C A B OTP Verification");
   myColors mc = myColors();
 
   Text Header()
@@ -27,7 +29,24 @@ class widgets  {
       ),
     );
   }
-
+// Email Sender
+  Future<String>sendOTP(String email) async {
+    var result = await emailAuth.sendOtp(recipientMail:email,otpLength: 4);
+    if(result)
+      {
+        return "SENT";
+      }
+    return "ERROR";
+  }
+  // Email Verify
+Future<bool> verifyOTP(String email, String _otp) async {
+    bool result = emailAuth.validateOtp(recipientMail: email, userOtp: _otp);
+    if(result)
+    {
+      return true;
+    }
+    return false;
+  }
   // Image Getter
   putImage(String name, double ht , double wd)
   {
@@ -69,16 +88,21 @@ class widgets  {
       ),
     );
   }
-  Text putQuote(final String text,final double textSize , final double spacing, Color textColor)
+putQuote(final String text,final double textSize , final double spacing, Color textColor)
   {
-    return Text(text,
-      style: GoogleFonts.caveat(
-        fontSize: textSize,
-        color: textColor,
-        letterSpacing: spacing,
-        fontWeight: FontWeight.w300,
+    return Column(
+      children: [
+        putText("TODAY'S QUOTE", 25.0, 2.0, mc.primaryBlue),
+        Text(text,
+          style: GoogleFonts.lato(
+            fontSize: textSize,
+            color: textColor,
+            letterSpacing: spacing,
+            fontWeight: FontWeight.w300,
 
-      ),
+          ),
+        ),
+      ],
     );
   }
 // Elevated Button Style
@@ -162,20 +186,6 @@ wordCard(final String word , final String translatedWord , final String meaning,
                         fontWeight: FontWeight.w500)),
               ),
               // Favorite
-              ElevatedButton(
-                style: elevatedButtonStyle(mc.Green, 80.0, 20.0),
-                onPressed: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>  WordDetails(word:word)),
-                        )
-                },
-                child:Text("DETAILS",
-                    style: GoogleFonts.montserrat(
-                        letterSpacing: 1.0,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500)),
-              ),
               // Report Error
               ElevatedButton(
                 style: elevatedButtonStyle(mc.Red, 120.0, 20.0),
@@ -199,13 +209,12 @@ wordCard(final String word , final String translatedWord , final String meaning,
 }
 
 // WordCardSaved
-  wordCardSaved(final String word , final String translatedWord , final String meaning, final int index, final double width, BuildContext context)
+  wordCardSaved(final String word , final String translatedWord , final String meaning, final int index, final double width, BuildContext context, AsyncSnapshot snapshot)
   {
     return Column(
       children: [
         Container(
           width: width,
-          height: 140,
           decoration: BoxDecoration(
               color: (index.isEven) ? Colors.orange.withOpacity(0.7):Colors.deepPurpleAccent.withOpacity(0.5),
               borderRadius: BorderRadius.circular(8.0)
@@ -216,15 +225,9 @@ wordCard(final String word , final String translatedWord , final String meaning,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Words , icon and Traslated
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    putText(word, 18.0, 3.0, mc.greyText),
-                    Icon(Icons.double_arrow_outlined,color: mc.white,),
-                    putText(translatedWord, 18.0, 3.0, mc.greyText),
-                  ],
-                ),
+                // Word
+                    putText(word, 18.0, 3.0, mc.white),
+
                 const SizedBox(height: 15.0,),
                 putText(meaning, 12.0, 1.0, mc.white),
                 const SizedBox(height: 15.0,),
@@ -239,7 +242,7 @@ wordCard(final String word , final String translatedWord , final String meaning,
                       onPressed: () => {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) =>  WordDetails(word:word)),
+                          MaterialPageRoute(builder: (context) =>  WordDetails(snapshot: snapshot, index: index)),
                         )
                       },
                       child:Text("DETAILS",
