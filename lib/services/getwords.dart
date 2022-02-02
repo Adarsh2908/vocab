@@ -20,8 +20,9 @@ class GetWords
     });
     // Getting Response of all the words
 
-    int last = 10, index = 0;
+    int last = 4, index = 0;
     for(int i = 0; i<last; i++) {
+      Future.delayed(const Duration(milliseconds: 100));
       try{
         Response response = await _dio.get("https://api.dictionaryapi.dev/api/v2/entries/en/${words[i]}");
         if(response.statusCode != 404)
@@ -40,7 +41,7 @@ class GetWords
             if(synonym.isEmpty) synonym.add("No Synonym found.");
             List antonyms = response.data[0]['meanings'][0]['definitions'][0]['antonyms'];
             if(antonyms.isEmpty) antonyms.add("No Antonyms found.");
-          //   print(word);
+            print(word);
           // print(origin);
           // print(audioURL);
           // print(definition);

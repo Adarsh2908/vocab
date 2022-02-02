@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'widgets.dart';
+import '../services/audio_player.dart';
 
 class WordDetails extends StatelessWidget {
   final AsyncSnapshot snapshot;
@@ -37,15 +38,9 @@ class WordDetails extends StatelessWidget {
           padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
-              // Word + Hindi
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                wd.putText(word.toUpperCase(), 22.0, 3.0, mc.greyText),
-                  Icon(Icons.double_arrow_outlined,color: mc.white,),
-                  wd.putText("Hindi", 22.0, 2.0, mc.primaryBlue)
-              ],
-              ),
+              // Word
+                wd.putText(word.toUpperCase(), 23.0, 3.0, mc.primaryBlue),
+
               // Pronuntiation
               const SizedBox(height: 30.0,),
               Row(
@@ -53,9 +48,11 @@ class WordDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   wd.putText("Pronunciation".toUpperCase(), 17.0, 3.0, mc.greyText),
-                  SizedBox(width: 20.0,),
+                  const SizedBox(width: 20.0,),
                   InkWell(
-                    onTap: ()=>{},
+                    onTap: ()  =>{
+                      WordPlayer().playWord(word),
+                    },
                     child: Icon(Icons.headphones,color: mc.Green,),
                   )
                 ],
