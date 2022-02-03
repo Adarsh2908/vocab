@@ -22,7 +22,6 @@ class GetWords
 
     int last = 4, index = 0;
     for(int i = 0; i<last; i++) {
-      Future.delayed(const Duration(milliseconds: 100));
       try{
         Response response = await _dio.get("https://api.dictionaryapi.dev/api/v2/entries/en/${words[i]}");
         if(response.statusCode != 404)

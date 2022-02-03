@@ -38,6 +38,7 @@ class _RegisterState extends State<Register> {
     Random random;
     int otp;
     String emailResponse;
+    int res;
     return Scaffold(
         backgroundColor: mc.Grey,
         appBar: AppBar(
@@ -201,26 +202,36 @@ class _RegisterState extends State<Register> {
                                   "0",
                                   _registerFirstname.text,
                                   _registerLastname.text),
+
                               // Call User Save method
-                               us.createUser(newUser).then((val){
-                               // print(val);
-                            }),
+
+                              res = await UserService().exists(_registerEmail.text),
+
                               // If user Exists
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                        Text('Please Verify your Email')
-                                    ),
-                                  ),
-                              // SEND Email now
-                              wd.sendOTP(_registerEmail.text),
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (
-                                      context) =>  OtpVerification(email: _registerEmail.text)),
-                                ),
+                              if(res == 2)
+                                {
+                                  wd.snackBar(context, "Email Already in use.")
                                 }
+                                else
+                                  if(res == 1)
+                                    {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                            Text('Please Verify your Email')
+                                        ),
+                                      ),
+                                      // SEND Email now
+                                      wd.sendOTP(_registerEmail.text),
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            OtpVerification(
+                                                email: _registerEmail.text, data: newUser.userData())),
+                                      ),
+                                    }
+                            }
                             }
 
                     },

@@ -3,9 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 import 'widgets.dart';
 import 'homepage.dart';
+import '../models/users.dart';
+import '../services/userservice.dart';
 class OtpVerification extends StatefulWidget {
   final String email;
-  const OtpVerification({Key? key, required this.email}) : super(key: key);
+  final dynamic data;
+  const OtpVerification({Key? key, required this.email, required this.data}) : super(key: key);
 
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
@@ -21,7 +24,7 @@ class _OtpVerificationState extends State<OtpVerification> {
     bool isValid;
     final _formKey = GlobalKey<FormState>();
     final TextEditingController _otpValue = TextEditingController();
-
+     int res;
     return Scaffold(
       backgroundColor: mc.background,
       appBar: AppBar(
@@ -37,7 +40,7 @@ class _OtpVerificationState extends State<OtpVerification> {
           child: Center(
             child: Column(
               children: [
-                SizedBox(height: 50.0,),
+                const SizedBox(height: 50.0,),
                 //Image
                 wd.putImage("1.png", 200.0, 200.0),
 
@@ -104,8 +107,11 @@ class _OtpVerificationState extends State<OtpVerification> {
                       if (_formKey.currentState!.validate())
                         {
                           isValid = await wd.verifyOTP(widget.email, _otpValue.text) ,
+
                           if(isValid)
                             {
+                              // When OTP is Valid then register the data in database
+                               await UserService().register(widget.data),
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(
                                 const SnackBar(

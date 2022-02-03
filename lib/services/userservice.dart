@@ -1,20 +1,61 @@
-import 'dart:convert';
+// Imports
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import '../models/users.dart';
 
-class UserService{
+class UserService {
+  // Vars , Constructors
   Dio dio = Dio();
-  createUser(Users user) async
-  {
-    Response response;
+  late Response _response;
+  late Response _registerresponse;
+  late Response _existsRes;
+
+  //  *********  Functions *********
+  // User Login
+  Future<int> login(String email, String password) async {
     try {
-      response = await dio.get('http://www.google.com');
-      print(response);
-    } on DioError catch(e)
-    {
-      print(e.message);
+      _response = await dio.post("http://192.168.1.9:3000/user/login",
+          data: {"email": email, "password": password},
+          options: Options(contentType: Headers.formUrlEncodedContentType));
+    } on DioError catch (e) {
+      return 3;
     }
+    if (_response.statusCode == 202) {
+      return 1; // Success
+    } else if (_response.statusCode == 200) {
+      return 2; // User not found
+    } else {
+      return 0;
+    }
+  }
+
+  // User Registration
+  Future<int> register(var data) async {
+    try {
+      _registerresponse = await dio.post("http://192.168.1.9:3000/user",
+          data: data,
+          options: Options(contentType: Headers.formUrlEncodedContentType));
+
+    } on DioError catch (e) {
+
+      return 1;
+    }
+    if (_registerresponse.statusCode == 400) {
+      return 2; // Server Error
+    }
+    return 3; // Success
+  }
+
+  // User Exists Check
+  Future<int> exists(String email) async {
+    try {
+      _existsRes = await dio.post("http://192.168.1.9:3000/user/exists",
+          data: {"email":email},
+          options: Options(contentType: Headers.formUrlEncodedContentType));
+
+    } on DioError catch (e) {
+      print(e.response!.statusCode);
+      return 1; // User Doesn't exists
+    }
+    return 2; // Exists
   }
 
 }

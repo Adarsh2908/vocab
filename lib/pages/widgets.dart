@@ -288,5 +288,15 @@ bool userExists(bool res)
   return res ? true :false;
 }
 
+snackBar(BuildContext context, String message)
+{
+  return( ScaffoldMessenger.of(context)
+      .showSnackBar(
+       SnackBar(
+        content: Text(
+            message),
+        backgroundColor: Colors.red,
+      )));
+}
 
 }

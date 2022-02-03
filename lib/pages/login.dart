@@ -1,3 +1,4 @@
+import 'package:Vocab/services/userservice.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    int res;
     return WillPopScope(
       onWillPop: () async {
         SystemNavigator.pop();
@@ -169,19 +171,40 @@ class _LoginState extends State<Login> {
                                                   backgroundColor: Colors.red,
                                                 ))
                                               }
-                                            // Else When email is valid
+                                            //Check Weather The password is correct or not
+
+                                            // Else When email and password is correct
                                             else
                                               {
-                                                prefs.setString(
-                                                    'logged', stayLogin),
-                                                prefs.setString(
-                                                    'email', _loginEmail.text),
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
+                                               res =  await UserService().login(_loginEmail.text, _loginPassword.text),
+                                                if(res == 1)
+                                                  {
+                                                    prefs.setString(
+                                                        'logged', stayLogin),
+                                                    prefs.setString(
+                                                        'email',
+                                                        _loginEmail.text),
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
                                                           const HomePage()),
-                                                ),
+                                                    ),
+                                                  }
+                                                else if(res == 2)
+                                                  {
+                                                    wd.snackBar(context, "User not Found.")
+                                                  }
+                                                else if(res == 3)
+                                                  {
+                                                    wd.snackBar(context, "Wrong Password.")
+
+                                                  }
+                                                else
+                                                  {
+                                                    wd.snackBar(context, "Server Error.")
+
+                                                  }
                                               }
                                           }
                                       },

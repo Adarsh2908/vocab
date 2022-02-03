@@ -1,5 +1,7 @@
+import 'package:Vocab/models/wordmodel.dart';
 import 'package:Vocab/pages/login.dart';
 import 'package:Vocab/pages/saved_words.dart';
+import 'package:Vocab/pages/search_word.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +18,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     widgets wd = widgets();
     myColors mc = myColors();
+    WordModel md;
     return WillPopScope(
       onWillPop: () async {
         SystemNavigator.pop();
@@ -89,7 +92,7 @@ class HomePage extends StatelessWidget {
                       // Favorite
                       ElevatedButton(
                         style: wd.elevatedButtonStyle(mc.Green, 100.0, 20.0),
-                        onPressed: () => {
+                        onPressed: () async => {
 
                         },
                         child:Text("SEARCH",
