@@ -12,7 +12,7 @@ class UserService {
   // User Login
   Future<int> login(String email, String password) async {
     try {
-      _response = await dio.post("http://192.168.1.9:3000/user/login",
+      _response = await dio.post("http://192.168.1.9:3000/user/login", // Local IP only for demostration 
           data: {"email": email, "password": password},
           options: Options(contentType: Headers.formUrlEncodedContentType));
     } on DioError catch (e) {
